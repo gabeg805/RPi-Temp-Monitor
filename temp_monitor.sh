@@ -10,5 +10,6 @@ TIMESTAMP=$(/bin/date)
 # Temperature of the raspberry pi
 TEMP=$(/usr/bin/vcgencmd measure_temp)
 
+# Write to the log
 mkdir -p "${LOG_DIR}"
-#echo "[${TIMESTAMP}] ${TEMP}" | tee -a "${LOG_FILE}"
+echo "[${TIMESTAMP}] ${TEMP}" | tee -a "${LOG_FILE}"
