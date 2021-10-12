@@ -69,9 +69,12 @@ then
 	# Email/print that an error occurred
 	if [ -z "${EMAIL_ADDR}" ]
 	then
-		"${HOME}"/projects/bin/email.sh -t "${EMAIL_ADDR}" -s "Temp Monitor Sync Failed"
+		"${HOME}"/projects/bin/email.sh \
+			-t "${EMAIL_ADDR}" \
+			-s "$(hostname) Temp Sync Failed" \
+			-b "Temp monitor was unable to sync."
 	else
-		echo "Error: Temp monitor sync failed."
+		echo "Error: $(hostname) temp monitor sync failed."
 		exit 1
 	fi
 
