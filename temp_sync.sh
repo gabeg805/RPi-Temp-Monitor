@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Email address
+EMAIL_ADDR="${1}"
+
 # Log directory and file
 LOG_DIR="${HOME}/.log/temp_monitor"
 LOG_FILE="${LOG_DIR}/temp.log"
@@ -56,7 +59,20 @@ then
 fi
 
 # Copy the temp.log over
-timeout -k 1 sleep 5
-echo $?
+timeout -k 30 30 \
+	scp -P "${FEEDER_PORT}" "${LOG_FILE}" \
+		"${FEEDER_USER}"@"${FEEDER_IP_ADDR}":"${DST_DIR}"
 
-#scp -P "${FEEDER_PORT}" "${LOG_FILE}" "${FEEDER_USER}"@"${FEEDER_IP_ADDR}":"${DST_DIR}"
+if [ $? -ne 0 ]
+then
+
+	# Email/print that an error occurred
+	if [ -z "${EMAIL_ADDR}" ]
+	then
+		"${HOME}"/projects/bin/email.sh -t "${EMAIL_ADDR}" -s "Temp Monitor Sync Failed"
+	else
+		echo "Error: Temp monitor sync failed."
+		exit 1
+	fi
+
+fi
