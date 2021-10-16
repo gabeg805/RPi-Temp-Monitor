@@ -40,7 +40,7 @@ then
 fi
 
 # Export the SSH authentication socket environment variable
-if [ -S "${SSH_AUTH_SOCK}" ]
+if [ -e "${SSH_AUTH_SOCK}" ]
 then
 	export SSH_AUTH_SOCK
 else
