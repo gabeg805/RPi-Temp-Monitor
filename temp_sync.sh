@@ -16,14 +16,14 @@ SSH_CONFIG="${HOME}/.ssh/config"
 # Make sure the log file exists
 if [ ! -f "${LOG_FILE}" ]
 then
-	echo "Log file does not exist." 1>&2
+	echo "Log file does not exist : '${LOG_FILE}'" 1>&2
 	exit 1
 fi
 
 # Make sure the SSH config file exists
 if [ ! -f "${SSH_CONFIG}" ]
 then
-	echo "SSH config file does not exist." 1>&2
+	echo "SSH config file does not exist : '${SSH_CONFIG}'" 1>&2
 	exit 1
 fi
 
@@ -44,7 +44,7 @@ if [ -S "${SSH_AUTH_SOCK}" ]
 then
 	export SSH_AUTH_SOCK
 else
-	echo "SSH authentication socket does not exist." 1>&2
+	echo "SSH authentication socket does not exist : '${SSH_AUTH_SOCK}'" 1>&2
 	exit 2
 fi
 
