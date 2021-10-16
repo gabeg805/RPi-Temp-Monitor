@@ -82,14 +82,15 @@ fi
 # Copy the temp.log over
 timeout -k 30 30 \
 	scp -P "${FEEDER_PORT}" "${LOG_FILE}" \
-		"${FEEDER_USER}"@"${FEEDER_IP_ADDR}":"${DST_DIR}"
+		"${FEEDER_USER}"@"${FEEDER_IP_ADDR}":"${DST_DIR}" > /dev/null
 
 if [ $? -ne 0 ]
 then
 
-	# Only email every 8 hr, otherwise just print
+	# Only email every 8 hours at minute 0, otherwise just print
 	hour=$(date +"%H")
-	shouldEmail=$[ ${hour} % 8 ]
+	min=$(date +"%M")
+	shouldEmail=$[ (${hour} % 8) + ${min} ]
 
 	# Email/print that an error occurred
 	if [ -n "${EMAIL_ADDR}" -a ${shouldEmail} -eq 0 ]
