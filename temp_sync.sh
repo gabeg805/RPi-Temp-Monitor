@@ -40,6 +40,9 @@ then
 fi
 
 # Export the SSH authentication socket environment variable
+env > ~/dummy.txt
+ls -la "${SSH_AUTH_SOCK}" 1>&2
+
 if [ -e "${SSH_AUTH_SOCK}" ]
 then
 	export SSH_AUTH_SOCK
