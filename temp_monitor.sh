@@ -11,5 +11,12 @@ TIMESTAMP=$(/bin/date +"%Y-%m-%d %H:%M:%S %Z")
 TEMP=$(/usr/bin/vcgencmd measure_temp)
 
 # Write to the log
-mkdir -p "${LOG_DIR}"
-echo "[${TIMESTAMP}] ${TEMP}" | tee -a "${LOG_FILE}"
+if [ "${1}" == "-l" -o "${1}" == "--log" ]
+then
+	mkdir -p "${LOG_DIR}"
+	echo "[${TIMESTAMP}] ${TEMP}" >> "${LOG_FILE}"
+
+# Print to the terminal
+else
+	echo "[${TIMESTAMP}] ${TEMP}"
+fi
