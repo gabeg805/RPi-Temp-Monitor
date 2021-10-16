@@ -27,6 +27,27 @@ then
 	exit 1
 fi
 
+# Make sure the SSH authentication socket file exists
+if [ -z "${SSH_AUTH_SOCK}" ]
+then
+
+	if [ -z "${XDG_RUNTIME_DIR}" ]
+	then
+		export XDG_RUNTIME_DIR="/run/user/${UID}"
+	fi
+
+	SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+fi
+
+# Export the SSH authentication socket environment variable
+if [ -S "${SSH_AUTH_SOCK}" ]
+then
+	export SSH_AUTH_SOCK
+else
+	echo "SSH authentication socket does not exist." 1>&2
+	exit 2
+fi
+
 # Feeder configuration
 FEEDER_CONFIG=$(grep -iw -A 3 "Host feeder" "${SSH_CONFIG}" | sed 's/^[ \t]*//')
 
@@ -49,13 +70,13 @@ fi
 if [ -z "${FEEDER_IP_ADDR}" ]
 then
 	echo "Unable to find IP address in SSH config." 1>&2
-	exit 1
+	exit 3
 fi
 
 if [ -z "${FEEDER_PORT}" ]
 then
 	echo "Unable to find port number in SSH config." 1>&2
-	exit 1
+	exit 3
 fi
 
 # Copy the temp.log over
@@ -66,16 +87,20 @@ timeout -k 30 30 \
 if [ $? -ne 0 ]
 then
 
+	# Only email every 8 hr, otherwise just print
+	hour=$(date +"%H")
+	shouldEmail=$[ ${hour} % 8 ]
+
 	# Email/print that an error occurred
-	if [ -z "${EMAIL_ADDR}" ]
+	if [ -n "${EMAIL_ADDR}" -a ${shouldEmail} -eq 0 ]
 	then
 		"${HOME}"/projects/bin/email.sh \
 			-t "${EMAIL_ADDR}" \
 			-s "$(hostname) Temp Sync Failed" \
 			-b "Temp monitor was unable to sync."
 	else
-		echo "Error: $(hostname) temp monitor sync failed."
-		exit 1
+		echo "Error: $(hostname) temp monitor sync failed." 1>&2
+		exit 10
 	fi
 
 fi
