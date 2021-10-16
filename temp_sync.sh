@@ -40,7 +40,6 @@ then
 fi
 
 # Export the SSH authentication socket environment variable
-env > ~/dummy.txt
 ls -la "${SSH_AUTH_SOCK}" 1>&2
 
 if [ -e "${SSH_AUTH_SOCK}" ]
@@ -91,8 +90,8 @@ if [ $? -ne 0 ]
 then
 
 	# Only email every 8 hours at minute 0, otherwise just print
-	hour=$(date +"%H")
-	min=$(date +"%M")
+	hour=$(date +"%-H")
+	min=$(date +"%-M")
 	shouldEmail=$[ (${hour} % 8) + ${min} ]
 
 	# Email/print that an error occurred
