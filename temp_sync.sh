@@ -81,7 +81,7 @@ fi
 
 # Copy the temp.log over
 timeout -k 30 30 \
-	scp -P "${FEEDER_PORT}" "${LOG_FILE}" \
+	scp -q -P "${FEEDER_PORT}" "${LOG_FILE}" \
 		"${FEEDER_USER}"@"${FEEDER_IP_ADDR}":"${DST_DIR}" > /dev/null
 
 if [ $? -ne 0 ]
