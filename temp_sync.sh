@@ -39,10 +39,13 @@ then
 	SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
 fi
 
-# Export the SSH authentication socket environment variable
-ls -la "${SSH_AUTH_SOCK}" 1>&2
+# Export the SSH authentication socket environment variable.
+# Doing it this way instead of the commented way because that way wasn't
+# working for some reason.
+ls -la "${SSH_AUTH_SOCK}" > /dev/null
 
-if [ -e "${SSH_AUTH_SOCK}" ]
+#if [ -e "${SSH_AUTH_SOCK}" ]
+if [ $? -eq 0 ]
 then
 	export SSH_AUTH_SOCK
 else
